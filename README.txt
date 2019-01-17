@@ -27,7 +27,7 @@ Pain numerical rating scale (NRS) scores from individual subjects.
 
 CODE FILES
 ----------
-All code was writen in R by Joanna Diong [v3.4.4]. 
+All code was written in R by Joanna Diong [v3.4.4]. 
 
 Additional R packages:
 reshape2
