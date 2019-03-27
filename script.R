@@ -7,7 +7,7 @@ library(reshape2)
 library(ggplot2)
 library(plyr)
 
-# Set current working directory
+# Set working directory to where CSV file is located
 setwd('/home/joanna/Dropbox/Projects/shoulderPain/doc/ms/S1 File')
 
 # Read in CSV file, assign values to dataframe `df`
@@ -32,31 +32,7 @@ as.numeric(levels(df$time))[df$time]
 ds <- ddply(df, na.rm=T, .(time, site), summarise, mean=mean(value), sd=sd(value), 
             median=median(value,na.rm=T), qt25=quantile(value,0.25,type=6,na.rm=T), qt75=quantile(value,0.75,type=6,na.rm=T))
 
-# Plot raw pain scores on time for each subject, add jitter to x-axis values
-ggplot(data=df, aes(y=df$value, x=df$time)) + 
-  # set x- and y-axis labels
-  labs(x="Time (minute)", y="Pain score") +
-  # set colours for `subacromial`, `supraspinatus` factor levels
-  scale_colour_manual(name="", values=c("cyan", "grey55", "blue", "black")) +
-  # define geometry: plot each values as a point, set plot aesthetics and jitter
-  geom_point(aes(x=df$time, colour=df$site), size=3, position=position_jitter(width=0.2,height=0)) +
-  # set y-axis ticks
-  scale_y_discrete(breaks=c("0", "1", "2", "3", "4", "5", "6",  "7", "8", "9")) + 
-  # set theme as black-white
-  theme_bw() + 
-  # set parameters of theme
-  theme(
-    axis.text=element_text(size=14),
-    legend.text=element_text(size=14),
-    # position legend at 90% of x- and y-axis length
-    legend.position=c(0.9, 0.9),
-    legend.key=element_blank(),
-    panel.grid.major=element_blank(),
-    panel.grid.minor=element_blank()
-  ) 
-
-rep = replicate(12, c("cyan", "grey55", "blue", "black"))
-
+df$value <- as.factor(df$value)
 # Plot raw and summary data of pain scores
 set.seed(1)
 legend_point_fill <- c("white", "gray55", "white", "black")
@@ -70,7 +46,7 @@ fig <- ggplot() +
   scale_fill_manual(values=legend_point_fill) + 
   guides(fill=FALSE) +
   coord_cartesian(ylim=c(-0.1, 10)) + 
-  scale_y_discrete(breaks=c("0", "1", "2", "3", "4", "5", "6",  "7", "8", "9", "10")) + 
+  scale_y_discrete(limits=c("1", "2", "3", "4", "5", "6",  "7", "8", "9", "10")) +
   theme_bw() + 
   theme(
     axis.text=element_text(size=14),
@@ -94,6 +70,6 @@ fig <- ggplot() +
   guides(col=guide_legend(override.aes=list(shape=c(22, 22, 21, 21), fill=legend_point_fill)))
 print(fig)
 # save figure
-png(filename="Fig 3.png", width=11, height=7, units='in', res=300)
+png(filename="Fig3_.svg", width=11, height=7, units='in', res=300)
 plot(fig)
 dev.off()
